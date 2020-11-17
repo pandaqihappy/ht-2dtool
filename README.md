@@ -1,5 +1,124 @@
 # ht-2dtool
 
+## 初始化
+
+```javascript
+let tp = new Htopo("topo", option)
+```
+
+| Name   | Type   | Description | Attributes |
+| ------ | ------ | ----------- | ---------- |
+| id     | String | 节点id      |            |
+| option | Object | 配置项      | 可选       |
+
+## 配置项
+
+```javascript
+const option = {
+        toolbar: { // 工具栏配置
+          show: false, // 是否显示工具栏
+          addTools: [ // 添加自定义工具回调
+            {
+              type: "action", // 自定义工具类型
+              name: "save", // 自定义工具唯一标识，必须为英文，用于接口参数传递
+              label: "保存拓扑", // 自定义工具名称
+              action: () => { // 自定义工具回调函数
+                this.tp.getAllData(data => {
+                  this.getSaveTopo(data);
+                });
+              }
+            }
+          ]
+        },
+        overview: { // 鹰眼配置
+          show: true, // 是否显示
+          style: { // 鹰眼样式配置
+            width: 200, // 鹰眼图宽度
+            height: 100 // 鹰眼图高度
+          }
+        },
+        // 初始化图片
+        images: [
+            {
+              imageName: "ROUTER", // 图片名称
+              src: require("../../../../static/img/ROUTER.png") // 图片路径
+            },
+            {
+              imageName: "SERVER",
+              src: require("../../../../static/img/SERVER.png")
+            }
+        ],
+        // 要监听的业务状态
+        status: {
+          node: [ // 需要监听的节点业务属性
+            {
+              field: "state", // 业务key
+              status: "WARN", // 业务value
+              alarmIcon: { // 预置需要使用的状态图片、颜色大小
+                type: "warn", // 告警类型，决定了使用什么告警图片
+                color: "yellow", // 图片颜色
+                animation: "flicker", // 使用什么动画
+                width: 30, // 图片宽度
+                height: 30 // 图片高度
+              }
+            },
+            {
+              field: 'state',
+              status: 'offLine',
+              color: '#FF0000'
+            }
+          ],
+          line: [
+            {
+              field: "type", // 业务key
+              status: "line", // 业务value
+              flow: false, // 是否流动
+              color: "green" // 线条颜色
+            },
+            {
+              field: "state",
+              status: "NOT_MONITORED",
+              color: "blue"
+            }
+          ]
+        },
+        // 图元搜索字段映射配置
+        searchCond: ["name", "ip", "instanceId"],
+        // 图形面板
+        imagePalette: [
+          {
+            name: "设备资源",
+            images: this.images
+          }
+        ],
+        // 右键菜单配置项
+        rightMenu: {
+          node: [ // 选中节点时的菜单配置项
+            {
+              label: "删除",
+              callback: (node, line, event) => {}
+            },
+            {
+              label: "关联资源",
+              callback: (node, line, event) => {}
+            }
+          ],
+          line: [ // 选中连线时的菜单配置项
+            {
+              label: "删除",
+              callback: (node, line, event) => {}
+            },
+            {
+              label: "关联链路",
+              callback: (node, line, event) => {}
+            }
+          ]
+        }
+      };
+```
+
+
+
 ## addNodesToView(nodes)
 
 添加节点
@@ -37,7 +156,7 @@ let nodes = [
 
 
 
-## addLinesToView(lines) 添加连线
+## addLinesToView(lines) 
 
 添加连线
 
@@ -127,7 +246,18 @@ let nodes = [
 
 使用拓扑工具
 
-| Name     | Type     | Description          | Attributes |
-| -------- | -------- | -------------------- | ---------- |
-| useTool  | String   | 工具名称：           |            |
-| callback | Function | 使用工具后的回调函数 | 可选       |
+| Name     | Type     | Description                                                  | Attributes |
+| -------- | -------- | ------------------------------------------------------------ | ---------- |
+| useTool  | String   | 工具名称参数：<br />放大：‘zoomIn’<br />缩小：'zoomOut'<br />总览：'fitContent'<br />选择：'choice'<br />编辑：'edit'<br />连线：'edge'<br /> |            |
+| callback | Function | 使用工具后的回调函数                                         | 可选       |
+
+
+
+## viewLayout(animate,  type)
+
+视图布局
+
+| Name    | Type    | Description                                                  | Attributes |
+| ------- | ------- | ------------------------------------------------------------ | ---------- |
+| animate | Boolean | 是否使用动画过度                                             |            |
+| type    | String  | 布局类型：<br />circular：圆形布局<br />symmetric：对称布局<br />towardnorth：树形布局<br />hierarchical：层次布局 |            |
